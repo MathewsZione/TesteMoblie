@@ -1,7 +1,29 @@
 const homeScreen = require("../screens/home.screen")
+const loginScreen = require("../screens/login.screen")
+const myStoreScreen = require("../screens/myStore.screen")
 
-describe('Access Admin Panel', () => {
-    it('shoud login with valid credentials', async () => {
+let urlLoja = 'http://lojaebac.ebaconline.art.br/'
+let usuario = 'gerente'
+let senha = 'GD*peToHNJ1#c$sgk08EaYJQ'
+
+describe('Acess Admin Panel', () => {
+    it('Deve fazer login com crendencias validas', async () => {
+
         await homeScreen.goToLogin()
-    });
+        await loginScreen.setStoreAddress(urlLoja)
+        await loginScreen.continue()
+        await loginScreen.continueWithStoreCredentials()
+        await loginScreen.login(usuario, senha)
+        await loginScreen.goToTwoFactorAuth()
+        await loginScreen.twoFactorLogin(senha)
+
+        expect(await myStoreScreen.myStoreLogoIsDisplayed()).toBeTruthy()
+        expect(await myStoreScreen.getStoreName()).toEqual('EBAC - Shop')
+
+        setTimeout(() => {
+            console.log('Done')
+        }, 10000)
+
+    })
+
 })
